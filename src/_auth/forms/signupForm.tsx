@@ -14,10 +14,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Loader from "@/components/loader";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useCreateAccountMutation,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/useUserContext";
 
 const SignupForm = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  // 1. Define your form.
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const { mutateAsync: createUserAccount, isPending: isCreatingLoading } =
+    useCreateAccountMutation();
+  const { mutateAsync: signInAccount, isPending: isSignInLoading } =
+    useSignInAccount();
+
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -29,10 +42,46 @@ const SignupForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof SignUpSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+    try {
+      const newUser = await createUserAccount(values);
+
+      if (!newUser)
+        return toast({
+          variant: "destructive",
+          title: "something went wrong",
+        });
+
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (!session)
+        return toast({
+          variant: "destructive",
+          title: "sign in failed, try again",
+        });
+
+      const isLoggedIn = await checkAuthUser();
+
+      if (isLoggedIn) {
+        toast({
+          variant: "default",
+          title: "account created",
+          duration: 2000,
+        });
+        form.reset();
+        navigate("/");
+      } else {
+        return toast({
+          variant: "destructive",
+          title: "something went wrong",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -101,8 +150,17 @@ const SignupForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isLoading ? <Loader /> : "Sign up"}
+            {isCreatingLoading ? <Loader /> : "Sign up"}
           </Button>
+          <p className="text-small-regular text-light-2 text-center mt-2">
+            Alredy have an account?
+            <Link
+              to={"/sign-in"}
+              className="text-primary-500 text-small-semibold ml-1"
+            >
+              Sign in
+            </Link>
+          </p>
         </form>
       </div>
     </Form>
