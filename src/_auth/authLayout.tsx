@@ -14,7 +14,7 @@ export default function AuthLayout() {
           </section>
 
           <img
-            src="/assets/images/side-img.svg"
+            src="/assets/images/side-img.jpg"
             alt="logo"
             className="hidden md:block h-screen w-1/2 object-cover bg-no-repeat"
           />
