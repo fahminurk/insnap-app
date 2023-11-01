@@ -1,1 +1,10 @@
 export { default as Home } from "./home";
+export { default as Explore } from "./explore";
+export { default as Saved } from "./saved";
+export { default as CreatePost } from "./createPost";
+export { default as Profile } from "./profile";
+export { default as UpdateProfile } from "./updateProfile";
+export { default as UpdatePost } from "./updatePost";
+export { default as PostDetails } from "./postDetails";
+export { default as AllUsers } from "./allUsers";
+export { default as LikedPosts } from "./likedPosts";
