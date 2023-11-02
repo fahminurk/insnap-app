@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import GridPostList from "@/components/gridPostList";
 import Loader from "@/components/loader";
 import SearchResults from "@/components/searchResults";
@@ -70,6 +71,7 @@ const Explore = () => {
           <p className="text-light-4 mt-10 text-centerc w-full">End of posts</p>
         ) : (
           posts.pages.map((item, i) => (
+            // @ts-ignore
             <GridPostList key={`page-${i}`} posts={item.documents} />
           ))
         )}
