@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
-import { useEffect, useState } from "react";
+import { useSignOutAccount } from "@/lib/react-query/userQueries";
+import { useEffect } from "react";
 import { useUserContext } from "@/context/useUserContext";
 
 const TopBar = () => {
@@ -14,7 +14,7 @@ const TopBar = () => {
   }, [isSuccess, navigate]);
 
   return (
-    <section className={`topbar`}>
+    <nav className={`topbar`}>
       <div className="flex-between py-4 px-5">
         <Link to={"/"} className="flex gap-3 items-center">
           <p className="h3-bold italic underline">Insnap</p>
@@ -36,7 +36,7 @@ const TopBar = () => {
           </Link>
         </div>
       </div>
-    </section>
+    </nav>
   );
 };
 

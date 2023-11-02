@@ -1,13 +1,13 @@
 import {
   useDeleteSavedPost,
-  useGetCurrentUser,
   useLikePost,
   useSavePost,
-} from "@/lib/react-query/queriesAndMutations";
+} from "@/lib/react-query/postQueries";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
 import { useState, useEffect } from "react";
 import Loader from "./loader";
+import { useGetCurrentUser } from "@/lib/react-query/userQueries";
 
 const PostStats: React.FC<{ post?: Models.Document; userId: string }> = ({
   post,

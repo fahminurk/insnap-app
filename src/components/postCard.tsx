@@ -1,7 +1,5 @@
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
-
-// import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/useUserContext";
 import PostStats from "./postStats";

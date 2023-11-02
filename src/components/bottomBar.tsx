@@ -1,12 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-
 import { bottombarLinks } from "@/constants";
 
 const Bottombar = () => {
   const { pathname } = useLocation();
 
   return (
-    <section className="bottom-bar">
+    <nav className="bottom-bar">
       {bottombarLinks.map((link) => {
         const isActive = pathname === link.route;
         return (
@@ -29,7 +28,7 @@ const Bottombar = () => {
           </Link>
         );
       })}
-    </section>
+    </nav>
   );
 };
 

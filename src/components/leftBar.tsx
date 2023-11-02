@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
+import { useSignOutAccount } from "@/lib/react-query/userQueries";
 import { useEffect } from "react";
 import { useUserContext } from "@/context/useUserContext";
 import { sidebarLinks } from "@/constants";

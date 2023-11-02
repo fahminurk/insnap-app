@@ -16,13 +16,10 @@ import { Input } from "./ui/input";
 import { PostSchema } from "@/lib/validation";
 import { Models } from "appwrite";
 import { useUserContext } from "@/context/useUserContext";
-import { useToast } from "./ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import {
-  useCreatePost,
-  useUpdatePost,
-} from "@/lib/react-query/queriesAndMutations";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/postQueries";
 import Loader from "./loader";
+import { toast } from "sonner";
 
 const PostForm: React.FC<{
   post?: Models.Document;
@@ -31,7 +28,6 @@ const PostForm: React.FC<{
   const { mutateAsync: createPost, isPending: isCreating } = useCreatePost();
   const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost();
   const { user } = useUserContext();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof PostSchema>>({
@@ -53,7 +49,7 @@ const PostForm: React.FC<{
         imageId: post?.imageId,
         imageUrl: post?.imageUrl,
       });
-      if (!updatedPost) toast({ title: "please try again" });
+      if (!updatedPost) toast.error("please try again");
       return navigate(`/posts/${post.$id}`);
     }
 
@@ -62,7 +58,7 @@ const PostForm: React.FC<{
       userId: user.id,
     });
 
-    if (!newPost) toast({ title: "something went wrong" });
+    if (!newPost) toast.error("something went wrong");
     return navigate("/");
   }
 
@@ -139,9 +135,6 @@ const PostForm: React.FC<{
           )}
         />
         <div className="flex gap-4 items-center jus">
-          <Button type="button" className="shad-button_dark_4">
-            Cancel
-          </Button>
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
