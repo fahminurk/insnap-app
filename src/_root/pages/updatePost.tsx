@@ -1,6 +1,6 @@
 import Loader from "@/components/loader";
 import PostForm from "@/components/postForm";
-import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
+import { useGetPostById } from "@/lib/react-query/postQueries";
 import { useParams } from "react-router-dom";
 
 const UpdatePost = () => {

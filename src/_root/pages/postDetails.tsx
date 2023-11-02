@@ -1,17 +1,35 @@
 import Loader from "@/components/loader";
 import PostStats from "@/components/postStats";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/useUserContext";
-import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
+import { useDeletePost, useGetPostById } from "@/lib/react-query/postQueries";
 import { multiFormatDateString } from "@/lib/utils";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const PostDetails = () => {
   const { id } = useParams();
   const { data: post, isPending } = useGetPostById(id || "");
+  const { mutate: deletePost, isPending: isLoadingDelete } = useDeletePost();
   const { user } = useUserContext();
+  const navigate = useNavigate();
+  console.log(isLoadingDelete);
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    deletePost({ postId: id as string, imageId: post?.imageId });
+    navigate(-1);
+  };
   return (
     <div className="post_details-container">
       {isPending ? (
@@ -59,18 +77,38 @@ const PostDetails = () => {
                       height={24}
                     />
                   </Link>
-                  <Button
-                    onClick={handleDelete}
-                    variant={"ghost"}
-                    className="ghost_details-delete_btn"
-                  >
-                    <img
-                      src="/assets/icons/delete.svg"
-                      alt="delete"
-                      width={24}
-                      height={24}
-                    />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className="ghost_details-delete_btn"
+                      >
+                        <img
+                          src="/assets/icons/delete.svg"
+                          alt="delete"
+                          width={24}
+                          height={24}
+                        />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-black">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your post.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-red">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete}>
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               )}
             </div>

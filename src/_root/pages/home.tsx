@@ -1,6 +1,6 @@
 import Loader from "@/components/loader";
 import PostCard from "@/components/postCard";
-import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
+import { useGetRecentPosts } from "@/lib/react-query/postQueries";
 import { Models } from "appwrite";
 
 const Home = () => {
@@ -10,7 +10,9 @@ const Home = () => {
     <div className="flex flex-1 ">
       <div className="home-container">
         <div className="home-posts">
-          <h2 className="h3-bold md:h2-bold text-left w-full">Home Feed</h2>
+          <h2 className="sticky top-0 h3-bold md:h2-bold text-left w-full">
+            Home Feed
+          </h2>
           {isError ? (
             <div className="flex-center flex-col h-[432px] w-full h3-bold">
               <p>Appwrite still beta,</p>
