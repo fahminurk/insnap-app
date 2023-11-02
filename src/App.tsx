@@ -12,9 +12,9 @@ import {
   UpdateProfile,
 } from "./_root/pages";
 import RootLayout from "./_root/rootLayout";
-import { Toaster } from "./components/ui/toaster";
 import "./globals.css";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
 
 function App() {
   return (
