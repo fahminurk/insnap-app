@@ -14,12 +14,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Loader from "@/components/loader";
 import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
+import { useSignInAccount } from "@/lib/react-query/userQueries";
 import { useUserContext } from "@/context/useUserContext";
+import { toast } from "sonner";
 
 const SignInForm = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { checkAuthUser, isLoading } = useUserContext();
   const { mutateAsync: signInAccount, isPending: isSignInLoading } =
@@ -40,27 +39,16 @@ const SignInForm = () => {
         password: values.password,
       });
 
-      if (!session)
-        return toast({
-          variant: "default",
-          title: "password or email incorrect",
-        });
+      if (!session) return toast.error("email or password is incorrect");
 
       const isLoggedIn = await checkAuthUser();
 
       if (isLoggedIn) {
-        toast({
-          variant: "default",
-          title: "account created",
-          duration: 2000,
-        });
+        toast.success("you are logged in");
         form.reset();
         navigate("/");
       } else {
-        return toast({
-          variant: "destructive",
-          title: "something went wrong",
-        });
+        toast.error("something went wrong");
       }
     } catch (error) {
       console.log(error);
