@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -41,8 +42,11 @@ const SignupForm = () => {
       // console.log(new Date(1698847200 * 1000));
 
       const newUser = await createUserAccount(values);
-      console.log(newUser);
+      // console.log(newUser);
+
+      //@ts-ignore
       if (newUser.code === 409) return toast.error("email alredy exist");
+      // @ts-ignore
       if (newUser.code === 429)
         return toast.error(
           "Rate limit for the current endpoint has been exceeded. Please try again after some time."
