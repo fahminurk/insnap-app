@@ -14,21 +14,17 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Loader from "@/components/loader";
 import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 import {
   useCreateAccountMutation,
   useSignInAccount,
-} from "@/lib/react-query/queriesAndMutations";
-import { useUserContext } from "@/context/useUserContext";
+} from "@/lib/react-query/userQueries";
+import { toast } from "sonner";
 
 const SignupForm = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
-  const { mutateAsync: createUserAccount, isPending: isCreatingLoading } =
+  const { mutateAsync: createUserAccount, isPending } =
     useCreateAccountMutation();
-  const { mutateAsync: signInAccount, isPending: isSignInLoading } =
-    useSignInAccount();
+  useSignInAccount();
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -40,44 +36,19 @@ const SignupForm = () => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     try {
+      // console.log(new Date(1698847200 * 1000));
+
       const newUser = await createUserAccount(values);
-
-      if (!newUser)
-        return toast({
-          variant: "destructive",
-          title: "something went wrong",
-        });
-
-      const session = await signInAccount({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (!session)
-        return toast({
-          variant: "destructive",
-          title: "sign in failed, try again",
-        });
-
-      const isLoggedIn = await checkAuthUser();
-
-      if (isLoggedIn) {
-        toast({
-          variant: "default",
-          title: "account created",
-          duration: 2000,
-        });
-        form.reset();
-        navigate("/");
-      } else {
-        return toast({
-          variant: "destructive",
-          title: "something went wrong",
-        });
-      }
+      console.log(newUser);
+      if (newUser.code === 409) return toast.error("email alredy exist");
+      if (newUser.code === 429)
+        return toast.error(
+          "Rate limit for the current endpoint has been exceeded. Please try again after some time."
+        );
+      toast.success("account created");
+      navigate("/sign-in");
     } catch (error) {
       console.log(error);
     }
@@ -148,8 +119,12 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="shad-button_primary">
-            {isCreatingLoading ? <Loader /> : "Sign up"}
+          <Button
+            type="submit"
+            className="shad-button_primary"
+            disabled={isPending}
+          >
+            {isPending ? <Loader /> : "Sign up"}
           </Button>
           <p className="text-small-regular text-light-2 text-center mt-2">
             Alredy have an account?
